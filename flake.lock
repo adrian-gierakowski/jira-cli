@@ -1,0 +1,45 @@
+{
+  "nodes": {
+    "jira-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1766829914,
+        "narHash": "sha256-l1qb6jYlHqcnT4rZMtyu5aUimNYbBvZV5wT9TMWrVOQ=",
+        "owner": "adrian-gierakowski",
+        "repo": "jira-cli",
+        "rev": "34d33ec4a2452bd89c9be95d5b30b6d003f05af2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "adrian-gierakowski",
+        "ref": "main",
+        "repo": "jira-cli",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1767892417,
+        "narHash": "sha256-dhhvQY67aboBk8b0/u0XB6vwHdgbROZT3fJAjyNh5Ww=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "3497aa5c9457a9d88d71fa93a4a8368816fbeeba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "jira-src": "jira-src",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
