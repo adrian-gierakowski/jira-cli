@@ -15,6 +15,11 @@ const clientTimeout = 15 * time.Second
 
 var jiraClient *jira.Client
 
+// SetJiraClient sets the jira client. This is mainly used for testing.
+func SetJiraClient(c *jira.Client) {
+	jiraClient = c
+}
+
 // Client initializes and returns jira client.
 func Client(config jira.Config) *jira.Client {
 	if jiraClient != nil {

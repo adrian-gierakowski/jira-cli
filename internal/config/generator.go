@@ -114,6 +114,11 @@ func NewJiraCLIConfigGenerator(cfg *JiraCLIConfig) *JiraCLIConfigGenerator {
 	return &gen
 }
 
+// GetConfig returns the user config.
+func (c *JiraCLIConfigGenerator) GetConfig() *JiraCLIConfig {
+	return c.usrCfg
+}
+
 // Generate generates the config file.
 //
 //nolint:gocyclo
