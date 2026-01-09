@@ -143,39 +143,41 @@ func NewClient(c Config, opts ...ClientFunc) *Client {
 		opt(&client)
 	}
 
-	transport := &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-		TLSClientConfig: &tls.Config{
-			MinVersion:         tls.VersionTLS12,
-			InsecureSkipVerify: client.insecure,
-		},
-		DialContext: (&net.Dialer{
-			Timeout: client.timeout,
-		}).DialContext,
-	}
-
-	if c.AuthType != nil && *c.AuthType == AuthTypeMTLS {
-		// Create a CA certificate pool and add cert.pem to it.
-		caCert, err := os.ReadFile(c.MTLSConfig.CaCert)
-		if err != nil {
-			log.Fatalf("%s, %s", err, c.MTLSConfig.CaCert)
-		}
-		caCertPool := x509.NewCertPool()
-		caCertPool.AppendCertsFromPEM(caCert)
-
-		// Read the key pair to create the certificate.
-		cert, err := tls.LoadX509KeyPair(c.MTLSConfig.ClientCert, c.MTLSConfig.ClientKey)
-		if err != nil {
-			log.Fatal(err)
+	if client.transport == nil {
+		transport := &http.Transport{
+			Proxy: http.ProxyFromEnvironment,
+			TLSClientConfig: &tls.Config{
+				MinVersion:         tls.VersionTLS12,
+				InsecureSkipVerify: client.insecure,
+			},
+			DialContext: (&net.Dialer{
+				Timeout: client.timeout,
+			}).DialContext,
 		}
 
-		// Add the MTLS specific configuration.
-		transport.TLSClientConfig.RootCAs = caCertPool
-		transport.TLSClientConfig.Certificates = []tls.Certificate{cert}
-		transport.TLSClientConfig.Renegotiation = tls.RenegotiateFreelyAsClient
-	}
+		if c.AuthType != nil && *c.AuthType == AuthTypeMTLS {
+			// Create a CA certificate pool and add cert.pem to it.
+			caCert, err := os.ReadFile(c.MTLSConfig.CaCert)
+			if err != nil {
+				log.Fatalf("%s, %s", err, c.MTLSConfig.CaCert)
+			}
+			caCertPool := x509.NewCertPool()
+			caCertPool.AppendCertsFromPEM(caCert)
 
-	client.transport = transport
+			// Read the key pair to create the certificate.
+			cert, err := tls.LoadX509KeyPair(c.MTLSConfig.ClientCert, c.MTLSConfig.ClientKey)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			// Add the MTLS specific configuration.
+			transport.TLSClientConfig.RootCAs = caCertPool
+			transport.TLSClientConfig.Certificates = []tls.Certificate{cert}
+			transport.TLSClientConfig.Renegotiation = tls.RenegotiateFreelyAsClient
+		}
+
+		client.transport = transport
+	}
 
 	return &client
 }
@@ -184,6 +186,13 @@ func NewClient(c Config, opts ...ClientFunc) *Client {
 func WithTimeout(to time.Duration) ClientFunc {
 	return func(c *Client) {
 		c.timeout = to
+	}
+}
+
+// WithTransport is a functional opt to attach a custom transport to the client.
+func WithTransport(t http.RoundTripper) ClientFunc {
+	return func(c *Client) {
+		c.transport = t
 	}
 }
 
