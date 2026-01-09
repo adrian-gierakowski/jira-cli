@@ -42,7 +42,8 @@ type issueComment struct {
 
 // IssueOption is filtering options for an issue.
 type IssueOption struct {
-	NumComments uint
+	NumComments     uint
+	DescriptionOnly bool
 }
 
 // Issue is a list view for issues.
@@ -90,6 +91,14 @@ func (i Issue) RenderedOut(renderer *glamour.TermRenderer) (string, error) {
 }
 
 func (i Issue) String() string {
+	if i.Options.DescriptionOnly {
+		desc := i.description()
+		if desc == "" {
+			return i.Data.Fields.Summary
+		}
+		return fmt.Sprintf("%s\n\n%s", i.Data.Fields.Summary, desc)
+	}
+
 	var s strings.Builder
 
 	s.WriteString(i.header())
@@ -124,6 +133,14 @@ func (i Issue) String() string {
 }
 
 func (i Issue) fragments() []fragment {
+	if i.Options.DescriptionOnly {
+		return []fragment{
+			{Body: i.Data.Fields.Summary},
+			newBlankFragment(2),
+			{Body: i.description(), Parse: true},
+		}
+	}
+
 	scraps := []fragment{
 		{Body: i.header(), Parse: true},
 	}
