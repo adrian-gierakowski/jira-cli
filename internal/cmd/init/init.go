@@ -8,8 +8,11 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	"net/url"
+
 	"github.com/ankitpokhrel/jira-cli/internal/cmdutil"
 	jiraConfig "github.com/ankitpokhrel/jira-cli/internal/config"
+	"github.com/ankitpokhrel/jira-cli/internal/netrc"
 	"github.com/ankitpokhrel/jira-cli/internal/query"
 	"github.com/ankitpokhrel/jira-cli/pkg/jira"
 )
@@ -23,6 +26,7 @@ type initParams struct {
 	board        string
 	force        bool
 	insecure     bool
+	updateNetrc bool
 }
 
 // NewCmdInit is an init command.
@@ -46,6 +50,8 @@ func NewCmdInit() *cobra.Command {
 	cmd.Flags().Bool("force", false, "Forcefully override existing config if it exists")
 	cmd.Flags().Bool("insecure", false, `If set, the tool will skip TLS certificate verification.
 This can be useful if your server is using self-signed certificates.`)
+	cmd.Flags().Bool("update-netrc", false, `If set, the tool will update ~/.netrc with your jira credentials.
+This is useful if you are using tools like git-remote-helpers.`)
 
 	return &cmd
 }
@@ -81,6 +87,9 @@ func parseFlags(flags query.FlagParser) *initParams {
 	insecure, err := flags.GetBool("insecure")
 	cmdutil.ExitIfError(err)
 
+	updateNetrc, err := flags.GetBool("update-netrc")
+	cmdutil.ExitIfError(err)
+
 	return &initParams{
 		installation: installation,
 		server:       server,
@@ -90,6 +99,7 @@ func parseFlags(flags query.FlagParser) *initParams {
 		board:        board,
 		force:        force,
 		insecure:     insecure,
+		updateNetrc: updateNetrc,
 	}
 }
 
@@ -135,5 +145,29 @@ server's certificate chain and host name in requests to the jira server.`)
 		os.Exit(1)
 	}
 
+	cfg := c.GetConfig()
+
+	if params.updateNetrc {
+		if err := updateNetrc(cfg.Server, cfg.Login, params.force); err != nil {
+			cmdutil.Failed("Unable to update .netrc file: %s", err.Error())
+			os.Exit(1)
+		}
+		cmdutil.Success("Successfully updated .netrc file")
+	}
+
 	cmdutil.Success("Configuration generated: %s", file)
+}
+
+func updateNetrc(server, login string, force bool) error {
+	apiToken := os.Getenv("JIRA_API_TOKEN")
+	if apiToken == "" {
+		return fmt.Errorf("JIRA_API_TOKEN environment variable not set")
+	}
+
+	u, err := url.Parse(server)
+	if err != nil {
+		return fmt.Errorf("invalid server URL: %w", err)
+	}
+
+	return netrc.Update(u.Hostname(), login, apiToken, force)
 }
