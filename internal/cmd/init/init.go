@@ -145,10 +145,8 @@ server's certificate chain and host name in requests to the jira server.`)
 		os.Exit(1)
 	}
 
-	cfg := c.GetConfig()
-
 	if params.updateNetrc {
-		if err := updateNetrc(cfg.Server, cfg.Login, params.force); err != nil {
+		if err := updateNetrc(c.GetConfig().Server, c.GetConfig().Login, params.force); err != nil {
 			cmdutil.Failed("Unable to update .netrc file: %s", err.Error())
 			os.Exit(1)
 		}
