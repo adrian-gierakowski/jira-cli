@@ -91,7 +91,11 @@ func (i Issue) RenderedOut(renderer *glamour.TermRenderer) (string, error) {
 
 func (i Issue) String() string {
 	if i.Options.DescriptionOnly {
-		return i.description()
+		desc := i.description()
+		if desc == "" {
+			return i.Data.Fields.Summary
+		}
+		return fmt.Sprintf("%s\n\n%s", i.Data.Fields.Summary, desc)
 	}
 
 	var s strings.Builder
@@ -130,6 +134,8 @@ func (i Issue) String() string {
 func (i Issue) fragments() []fragment {
 	if i.Options.DescriptionOnly {
 		return []fragment{
+			{Body: i.Data.Fields.Summary},
+			newBlankFragment(2),
 			{Body: i.description(), Parse: true},
 		}
 	}
