@@ -52,7 +52,7 @@ func NewCmdView() *cobra.Command {
 
 	cmd.Flags().Uint(flagComments, 1, "Show N comments")
 	cmd.Flags().Bool(flagPlain, false, "Display output in plain mode")
-	cmd.Flags().Bool(flagDescription, false, "Display issue description only (implies --plain)")
+	cmd.Flags().BoolP(flagDescription, "d", false, "Display issue description only (implies --plain)")
 	cmd.Flags().Bool(flagRaw, false, "Print raw Jira API response")
 
 	return &cmd
