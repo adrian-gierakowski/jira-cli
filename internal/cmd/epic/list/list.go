@@ -80,7 +80,7 @@ func epicList(cmd *cobra.Command, args []string) {
 	client := api.DefaultClient(debug)
 
 	if len(args) == 0 {
-		epicExplorerView(cmd, cmd.Flags(), project, projectType, server, client)
+		epicExplorerView(cmd, cmd.Flags(), project, projectType, client)
 	} else {
 		key := cmdutil.GetJiraIssueKey(project, args[0])
 		singleEpicView(cmd.Flags(), key, project, projectType, server, client)
@@ -173,7 +173,7 @@ func singleEpicView(flags query.FlagParser, key, project, projectType, server st
 	cmdutil.ExitIfError(v.Render())
 }
 
-func epicExplorerView(cmd *cobra.Command, flags query.FlagParser, project, projectType, server string, client *jira.Client) {
+func epicExplorerView(cmd *cobra.Command, flags query.FlagParser, project, projectType string, client *jira.Client) {
 	q, err := query.NewIssue(project, flags)
 	cmdutil.ExitIfError(err)
 

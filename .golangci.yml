@@ -1,8 +1,18 @@
-version: 2
+version: "2"
+
 run:
   timeout: 5m
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+    - gofumpt
+  settings:
+    gofmt:
+      simplify: true
+
 linters:
-  disable-all: true
   enable:
     - bodyclose
     - dupl
@@ -13,23 +23,26 @@ linters:
     - govet
     - ineffassign
     - unused
-  disable:
+    - revive
+    - mnd
+    - prealloc
+    - unparam
     - staticcheck
-  fast: false
-linters-settings:
-  testpackage:
-    skip-regexp: ".*"
-  gocyclo:
-    min-complexity: 20
-  revive:
-    rules:
-      - name: package-comments
-        disabled: true
-  mnd:
-    checks:
-      - argument
-      - condition
-    ignored-numbers: ['0', '1', '2', '3']
+  settings:
+    testpackage:
+      skip-regexp: ".*"
+    gocyclo:
+      min-complexity: 20
+    revive:
+      rules:
+        - name: package-comments
+          disabled: true
+    mnd:
+      checks:
+        - argument
+        - condition
+      ignored-numbers: ["0", "1", "2", "3"]
+
 issues:
-  exclude-use-default: false
-  exclude-dirs-use-default: true
+  max-same-issues: 0
+  max-issues-per-linter: 0
