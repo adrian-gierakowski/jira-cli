@@ -44,9 +44,10 @@ install:
 lint:
 	@if ! command -v golangci-lint > /dev/null 2>&1; then \
 		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
-		sh -s -- -b "$$(go env GOPATH)/bin" v1.64.7 ; \
+		sh -s -- -b "$$(go env GOPATH)/bin" v2.8.0 ; \
 	fi
 	golangci-lint run ./...
+	golangci-lint fmt --diff ./...
 
 test:
 	@go clean -testcache

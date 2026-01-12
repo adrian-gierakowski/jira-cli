@@ -58,13 +58,11 @@ func remotelink(cmd *cobra.Command, args []string) {
 	}()
 	cmdutil.ExitIfError(err)
 
-	server := viper.GetString("server")
-
 	cmdutil.Success("Remote web link created for Issue %s", lc.params.issueKey)
-	fmt.Printf("%s\n", cmdutil.GenerateServerBrowseURL(server, lc.params.issueKey))
+	fmt.Printf("%s\n", cmdutil.GenerateServerBrowseURL(client, lc.params.issueKey))
 
 	if web, _ := cmd.Flags().GetBool("web"); web {
-		err := cmdutil.Navigate(server, lc.params.issueKey)
+		err := cmdutil.Navigate(client, lc.params.issueKey)
 		cmdutil.ExitIfError(err)
 	}
 }

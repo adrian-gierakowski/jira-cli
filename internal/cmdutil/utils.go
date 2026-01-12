@@ -91,15 +91,16 @@ func Failed(msg string, args ...interface{}) {
 }
 
 // Navigate navigates to jira issue.
-func Navigate(server, path string) error {
-	url := GenerateServerBrowseURL(server, path)
+func Navigate(client *jira.Client, path string) error {
+	url := GenerateServerBrowseURL(client, path)
 	return browser.Browse(url)
 }
 
 // GenerateServerBrowseURL will return the `browse` URL for a given key.
 // The server section can be overridden via `browse_server` in config.
 // This is useful if your API endpoint is separate from the web client endpoint.
-func GenerateServerBrowseURL(server, key string) string {
+func GenerateServerBrowseURL(client *jira.Client, key string) string {
+	server := client.ServerURL()
 	if viper.GetString("browse_server") != "" {
 		server = viper.GetString("browse_server")
 	}

@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/ankitpokhrel/jira-cli/api"
 	"github.com/ankitpokhrel/jira-cli/pkg/jira"
 	"github.com/ankitpokhrel/jira-cli/pkg/tui"
 )
@@ -13,7 +14,7 @@ import (
 func TestIssueData(t *testing.T) {
 	issue := IssueList{
 		Project: "TEST",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data:    getIssues(),
 		Display: DisplayFormat{
 			Plain:     false,
@@ -42,7 +43,7 @@ func TestIssueRenderInPlainView(t *testing.T) {
 
 	issue := IssueList{
 		Project: "TEST",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data:    getIssues(),
 		Display: DisplayFormat{
 			Plain:      true,
@@ -64,7 +65,7 @@ func TestIssueRenderInPlainViewWithCustomDelimiter(t *testing.T) {
 
 	issue := IssueList{
 		Project: "TEST",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data:    getIssues(),
 		Display: DisplayFormat{
 			Plain:      true,
@@ -86,7 +87,7 @@ func TestIssueRenderInPlainViewAndNoTruncate(t *testing.T) {
 
 	issue := IssueList{
 		Project: "TEST",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data:    getIssues(),
 		Display: DisplayFormat{
 			Plain:      true,
@@ -108,7 +109,7 @@ func TestIssueRenderInPlainViewWithoutHeaders(t *testing.T) {
 
 	issue := IssueList{
 		Project: "TEST",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data:    getIssues(),
 		Display: DisplayFormat{
 			Plain:      true,
@@ -131,7 +132,7 @@ func TestIssueRenderInPlainViewWithFewColumns(t *testing.T) {
 
 	issue := IssueList{
 		Project: "TEST",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data:    data,
 		Display: DisplayFormat{
 			Plain:     true,
@@ -153,7 +154,7 @@ func TestIssueRenderInCSVFormat(t *testing.T) {
 
 	issue := IssueList{
 		Project: "TEST",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data:    getIssues(),
 		Display: DisplayFormat{
 			CSV:        true,
@@ -175,7 +176,7 @@ func TestIssueRenderInCSVFormatWithoutHeaders(t *testing.T) {
 
 	issue := IssueList{
 		Project: "TEST",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data:    getIssues(),
 		Display: DisplayFormat{
 			CSV:        true,

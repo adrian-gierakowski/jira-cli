@@ -30,7 +30,7 @@ type DisplayFormat struct {
 // IssueList is a list view for issues.
 type IssueList struct {
 	Project    string
-	Server     string
+	Client     *jira.Client
 	Data       []*jira.Issue
 	Display    DisplayFormat
 	Refresh    tui.RefreshFunc
@@ -69,7 +69,7 @@ func (l *IssueList) Render() error {
 		tui.WithTableStyle(l.Display.TableStyle),
 		tui.WithTableFooterText(l.FooterText),
 		tui.WithTableHelpText(tableHelpText),
-		tui.WithSelectedFunc(navigate(l.Server)),
+		tui.WithSelectedFunc(navigate(l.Client)),
 		tui.WithViewModeFunc(func(r, c int, _ any) (func() any, func(any) (string, error)) {
 			dataFn := func() any {
 				ci := data.GetIndex(fieldKey)
@@ -78,7 +78,7 @@ func (l *IssueList) Render() error {
 			}
 			renderFn := func(i any) (string, error) {
 				iss := Issue{
-					Server:  l.Server,
+					Client:  l.Client,
 					Data:    i.(*jira.Issue),
 					Options: IssueOption{NumComments: l.Display.Comments},
 				}
@@ -86,7 +86,7 @@ func (l *IssueList) Render() error {
 			}
 			return dataFn, renderFn
 		}),
-		tui.WithCopyFunc(copyURL(l.Server)),
+		tui.WithCopyFunc(copyURL(l.Client)),
 		tui.WithCopyKeyFunc(copyKey()),
 		tui.WithMoveFunc(func(r, c int) func() (string, []string, tui.MoveHandlerFunc, string, tui.RefreshTableStateFunc) {
 			dataFn := func() (string, []string, tui.MoveHandlerFunc, string, tui.RefreshTableStateFunc) {
@@ -94,7 +94,7 @@ func (l *IssueList) Render() error {
 				client := api.DefaultClient(false)
 				transitions, _ := api.ProxyTransitions(client, key)
 
-				var actions []string
+				actions := make([]string, 0, len(transitions))
 				for _, t := range transitions {
 					actions = append(actions, t.Name)
 				}

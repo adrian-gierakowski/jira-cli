@@ -40,6 +40,7 @@ func parseNetrc(data string) []netrcLine {
 
 		f := strings.Fields(line)
 		i := 0
+	tokenLoop:
 		for ; i < len(f)-1; i += 2 {
 			// Reset at each "machine" token.
 			// “The auto-login process searches the .netrc file for a machine token
@@ -50,7 +51,7 @@ func parseNetrc(data string) []netrcLine {
 			case "machine":
 				l = netrcLine{machine: f[i+1]}
 			case "default":
-				break
+				break tokenLoop
 			case "login":
 				l.login = f[i+1]
 			case "password":

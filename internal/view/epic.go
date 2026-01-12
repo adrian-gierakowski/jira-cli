@@ -15,7 +15,7 @@ type EpicIssueFunc func(string) []*jira.Issue
 // EpicList is a list view for epics.
 type EpicList struct {
 	Project string
-	Server  string
+	Client  *jira.Client
 	Data    []*jira.Issue
 	Issues  EpicIssueFunc
 	Display DisplayFormat
@@ -34,11 +34,11 @@ func (el *EpicList) Render() error {
 	view := tui.NewPreview(
 		tui.WithPreviewFooterText(fmt.Sprintf("Showing %d results for project %q", len(el.Data), el.Project)),
 		tui.WithInitialText(helpText),
-		tui.WithSidebarSelectedFunc(navigate(el.Server)),
+		tui.WithSidebarSelectedFunc(navigate(el.Client)),
 		tui.WithContentTableOpts(
 			tui.WithTableStyle(el.Display.TableStyle),
 			tui.WithFixedColumns(el.Display.FixedColumns),
-			tui.WithSelectedFunc(navigate(el.Server)),
+			tui.WithSelectedFunc(navigate(el.Client)),
 			tui.WithViewModeFunc(func(r, c int, d any) (func() any, func(any) (string, error)) {
 				dataFn := func() any {
 					data := d.(tui.TableData)
@@ -48,7 +48,7 @@ func (el *EpicList) Render() error {
 				}
 				renderFn := func(i any) (string, error) {
 					iss := Issue{
-						Server:  el.Server,
+						Client:  el.Client,
 						Data:    i.(*jira.Issue),
 						Options: IssueOption{NumComments: 1},
 					}
@@ -56,7 +56,7 @@ func (el *EpicList) Render() error {
 				}
 				return dataFn, renderFn
 			}),
-			tui.WithCopyFunc(copyURL(el.Server)),
+			tui.WithCopyFunc(copyURL(el.Client)),
 			tui.WithCopyKeyFunc(copyKey()),
 		),
 	)

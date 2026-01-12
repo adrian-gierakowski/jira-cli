@@ -111,8 +111,9 @@ func viewPretty(cmd *cobra.Command, args []string) {
 	plain, err := cmd.Flags().GetBool(flagPlain)
 	cmdutil.ExitIfError(err)
 
+	client := api.DefaultClient(debug)
 	v := tuiView.Issue{
-		Server:  viper.GetString(configServer),
+		Client:  client,
 		Data:    iss,
 		Display: tuiView.DisplayFormat{Plain: plain},
 		Options: tuiView.IssueOption{NumComments: comments},

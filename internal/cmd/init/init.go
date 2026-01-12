@@ -96,12 +96,30 @@ func parseFlags(flags query.FlagParser) *initParams {
 func initialize(cmd *cobra.Command, _ []string) {
 	params := parseFlags(cmd.Flags())
 
+	client := jira.NewClient(jira.Config{
+		Server:   params.server,
+		AuthType: (*jira.AuthType)(&params.authType),
+		Insecure: &params.insecure,
+	})
+	info, err := client.TenantInfo()
+	if err != nil {
+		cmdutil.Failed("Unable to fetch tenant info: %s", err.Error())
+		os.Exit(1)
+	}
+	if info.CloudID == "" {
+		cmdutil.Failed("Unable to fetch cloud id from tenant info")
+		os.Exit(1)
+	}
+
+	CloudID := info.CloudID
+
 	c := jiraConfig.NewJiraCLIConfigGenerator(
 		&jiraConfig.JiraCLIConfig{
 			Installation: strings.ToLower(params.installation),
 			Server:       params.server,
 			Login:        params.login,
 			AuthType:     params.authType,
+			CloudID:      CloudID,
 			Project:      params.project,
 			Board:        params.board,
 			Force:        params.force,

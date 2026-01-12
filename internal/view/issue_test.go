@@ -71,6 +71,7 @@ func TestIssueDetailsRenderInPlainView(t *testing.T) {
 
 	issue := Issue{
 		Server:  "https://test.local",
+		Client:  jira.NewClient(jira.Config{Server: "https://test.local"}),
 		Data:    data,
 		Display: DisplayFormat{Plain: true},
 	}
@@ -219,6 +220,7 @@ func TestIssueDetailsWithV2Description(t *testing.T) {
 
 	issue := Issue{
 		Server:  "https://test.local",
+		Client:  jira.NewClient(jira.Config{Server: "https://test.local"}),
 		Data:    data,
 		Display: DisplayFormat{Plain: true},
 		Options: IssueOption{NumComments: 2},

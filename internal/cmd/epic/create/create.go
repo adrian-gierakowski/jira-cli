@@ -46,7 +46,6 @@ func SetFlags(cmd *cobra.Command) {
 }
 
 func create(cmd *cobra.Command, _ []string) {
-	server := viper.GetString("server")
 	project := viper.GetString("project.key")
 	projectType := viper.GetString("project.type")
 	installation := viper.GetString("installation")
@@ -130,10 +129,10 @@ func create(cmd *cobra.Command, _ []string) {
 	}()
 
 	cmdutil.ExitIfError(err)
-	cmdutil.Success("Epic created\n%s", cmdutil.GenerateServerBrowseURL(server, key))
+	cmdutil.Success("Epic created\n%s", cmdutil.GenerateServerBrowseURL(client, key))
 
 	if web, _ := cmd.Flags().GetBool("web"); web {
-		err := cmdutil.Navigate(server, key)
+		err := cmdutil.Navigate(client, key)
 		cmdutil.ExitIfError(err)
 	}
 }

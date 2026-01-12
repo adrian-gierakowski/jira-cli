@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/ankitpokhrel/jira-cli/api"
 	"github.com/ankitpokhrel/jira-cli/pkg/jira"
 	"github.com/ankitpokhrel/jira-cli/pkg/tui"
 )
@@ -98,7 +99,7 @@ func TestEpicData(t *testing.T) {
 
 	epic := EpicList{
 		Project: "TEST",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data:    []*jira.Issue{&epic1, &epic2},
 		Issues: func(s string) []*jira.Issue {
 			if s == "TEST-1" {

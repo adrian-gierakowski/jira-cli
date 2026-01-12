@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/ankitpokhrel/jira-cli/api"
 	"github.com/ankitpokhrel/jira-cli/pkg/jira"
 	"github.com/ankitpokhrel/jira-cli/pkg/tui"
 )
@@ -76,7 +77,7 @@ func TestSprintPreviewLayoutData(t *testing.T) {
 	sprint := SprintList{
 		Project: "TEST",
 		Board:   "Test Board",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data:    []*jira.Sprint{&sprint1, &sprint2},
 		Issues: func(boardID, sprintID int) []*jira.Issue {
 			if sprintID == 1 {
@@ -149,7 +150,7 @@ func TestSprintTableLayoutData(t *testing.T) {
 	sprint := SprintList{
 		Project: "TEST",
 		Board:   "Test Board",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data: []*jira.Sprint{
 			{
 				ID:           1,
@@ -185,7 +186,7 @@ func TestSprintRenderInPlainView(t *testing.T) {
 	sprint := SprintList{
 		Project: "TEST",
 		Board:   "Test Board",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data: []*jira.Sprint{
 			{
 				ID:           1,
@@ -225,7 +226,7 @@ func TestSprintRenderInPlainViewWithoutHeaders(t *testing.T) {
 	sprint := SprintList{
 		Project: "TEST",
 		Board:   "Test Board",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data: []*jira.Sprint{
 			{
 				ID:           1,
@@ -264,7 +265,7 @@ func TestSprintRenderInPlainViewWithFewColumns(t *testing.T) {
 	sprint := SprintList{
 		Project: "TEST",
 		Board:   "Test Board",
-		Server:  "https://test.local",
+		Client:  api.DefaultClient(false),
 		Data: []*jira.Sprint{
 			{
 				ID:           1,

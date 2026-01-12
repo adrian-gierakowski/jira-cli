@@ -85,7 +85,6 @@ func List(cmd *cobra.Command, args []string) {
 }
 
 func loadList(cmd *cobra.Command, args []string) {
-	server := viper.GetString("server")
 	project := viper.GetString("project.key")
 	numComments := viper.GetUint("num_comments")
 
@@ -172,7 +171,7 @@ func loadList(cmd *cobra.Command, args []string) {
 
 	v := view.IssueList{
 		Project: project,
-		Server:  server,
+		Client:  api.DefaultClient(debug),
 		Data:    issues,
 		Refresh: func() {
 			loadList(cmd, args)
