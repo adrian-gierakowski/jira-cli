@@ -115,7 +115,7 @@ func assign(cmd *cobra.Command, args []string) {
 	} else {
 		cmdutil.Success("User %q assigned to issue %q", uname, ac.params.key)
 	}
-	fmt.Printf("%s\n", cmdutil.GenerateServerBrowseURL(viper.GetString("server"), ac.params.key))
+	fmt.Printf("%s\n", cmdutil.GenerateServerBrowseURL(client, ac.params.key))
 }
 
 type assignParams struct {

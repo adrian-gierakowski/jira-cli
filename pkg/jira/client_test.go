@@ -68,6 +68,7 @@ func TestGetV2(t *testing.T) {
 	defer server.Close()
 
 	client := NewClient(Config{Server: server.URL}, WithTimeout(3*time.Second))
+	client.apiServer = server.URL
 	resp, err := client.GetV2(context.Background(), "/search?jql=project=TEST%20AND%20status=Done", Header{
 		"Content-Type": "text/plain",
 	})
@@ -89,6 +90,7 @@ func TestPost(t *testing.T) {
 	defer server.Close()
 
 	client := NewClient(Config{Server: server.URL}, WithTimeout(3*time.Second))
+	client.apiServer = server.URL
 	resp, err := client.Post(context.Background(), "/issue", []byte("hello"), Header{
 		"Content-Type":   "application/json",
 		"X-Requested-By": "jira-cli",
@@ -111,6 +113,7 @@ func TestPostV2(t *testing.T) {
 	defer server.Close()
 
 	client := NewClient(Config{Server: server.URL}, WithTimeout(3*time.Second))
+	client.apiServer = server.URL
 	resp, err := client.PostV2(context.Background(), "/issue", []byte("hello"), Header{
 		"Content-Type":   "application/json",
 		"X-Requested-By": "jira-cli",
@@ -133,6 +136,7 @@ func TestPostV1(t *testing.T) {
 	defer server.Close()
 
 	client := NewClient(Config{Server: server.URL}, WithTimeout(3*time.Second))
+	client.apiServer = server.URL
 	resp, err := client.PostV1(context.Background(), "/issue", []byte("hello"), Header{
 		"Content-Type":   "application/json",
 		"X-Requested-By": "jira-cli",
@@ -155,6 +159,7 @@ func TestPut(t *testing.T) {
 	defer server.Close()
 
 	client := NewClient(Config{Server: server.URL}, WithTimeout(3*time.Second))
+	client.apiServer = server.URL
 	resp, err := client.Put(context.Background(), "/issue/TEST-1/assignee", []byte("jon"), Header{
 		"Content-Type":   "application/json",
 		"X-Requested-By": "jira-cli",
@@ -177,6 +182,7 @@ func TestPutV2(t *testing.T) {
 	defer server.Close()
 
 	client := NewClient(Config{Server: server.URL}, WithTimeout(3*time.Second))
+	client.apiServer = server.URL
 	resp, err := client.PutV2(context.Background(), "/issue/TEST-1/assignee", []byte("jon"), Header{
 		"Content-Type":   "application/json",
 		"X-Requested-By": "jira-cli",
@@ -198,6 +204,7 @@ func TestDeleteV2(t *testing.T) {
 	defer server.Close()
 
 	client := NewClient(Config{Server: server.URL}, WithTimeout(3*time.Second))
+	client.apiServer = server.URL
 	resp, err := client.DeleteV2(context.Background(), "/issue/TEST-1", Header{
 		"X-Requested-By": "jira-cli",
 	})

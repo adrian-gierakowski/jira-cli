@@ -65,6 +65,7 @@ type JiraCLIMTLSConfig struct {
 type JiraCLIConfig struct {
 	Installation string
 	Server       string
+	CloudID      string
 	AuthType     string
 	Login        string
 	Project      string
@@ -749,6 +750,10 @@ func (c *JiraCLIConfigGenerator) write(path string) (string, error) {
 
 	if c.usrCfg.Insecure {
 		config.Set("insecure", c.usrCfg.Insecure)
+	}
+
+	if c.usrCfg.CloudID != "" {
+		config.Set("cloud_id", c.usrCfg.CloudID)
 	}
 
 	config.Set("installation", c.value.installation)

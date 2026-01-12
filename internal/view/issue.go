@@ -48,6 +48,7 @@ type IssueOption struct {
 // Issue is a list view for issues.
 type Issue struct {
 	Server  string
+	Client  *jira.Client
 	Data    *jira.Issue
 	Display DisplayFormat
 	Options IssueOption
@@ -433,7 +434,7 @@ func (i Issue) footer() string {
 	if i.Display.Plain {
 		out.WriteString("\n")
 	}
-	out.WriteString(gray(fmt.Sprintf("View this issue on Jira: %s", cmdutil.GenerateServerBrowseURL(i.Server, i.Data.Key))))
+	out.WriteString(gray(fmt.Sprintf("View this issue on Jira: %s", cmdutil.GenerateServerBrowseURL(i.Client, i.Data.Key))))
 
 	return out.String()
 }

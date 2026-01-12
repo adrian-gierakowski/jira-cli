@@ -107,13 +107,11 @@ func add(cmd *cobra.Command, args []string) {
 	}()
 	cmdutil.ExitIfError(err)
 
-	server := viper.GetString("server")
-
 	cmdutil.Success("Comment added to issue %q", ac.params.issueKey)
-	fmt.Printf("%s\n", cmdutil.GenerateServerBrowseURL(server, ac.params.issueKey))
+	fmt.Printf("%s\n", cmdutil.GenerateServerBrowseURL(client, ac.params.issueKey))
 
 	if web, _ := cmd.Flags().GetBool("web"); web {
-		err := cmdutil.Navigate(server, ac.params.issueKey)
+		err := cmdutil.Navigate(client, ac.params.issueKey)
 		cmdutil.ExitIfError(err)
 	}
 }

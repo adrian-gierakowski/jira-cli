@@ -147,7 +147,7 @@ func singleEpicView(flags query.FlagParser, key, project, projectType, server st
 
 	v := view.IssueList{
 		Project: project,
-		Server:  server,
+		Client:  client,
 		Data:    issues,
 		Refresh: func() {
 			singleEpicView(flags, key, project, projectType, server, client)
@@ -200,7 +200,7 @@ func epicExplorerView(cmd *cobra.Command, flags query.FlagParser, project, proje
 
 	v := view.EpicList{
 		Project: project,
-		Server:  server,
+		Client:  client,
 		Data:    epics,
 		Issues: func(key string) []*jira.Issue {
 			var resp *jira.SearchResult

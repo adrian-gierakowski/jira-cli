@@ -163,7 +163,7 @@ func singleSprintView(sprintQuery *query.Sprint, flags query.FlagParser, boardID
 
 	v := view.IssueList{
 		Project:    project,
-		Server:     server,
+		Client:     client,
 		Data:       issues,
 		FooterText: ft,
 		Refresh: func() {
@@ -227,7 +227,7 @@ func sprintExplorerView(sprintQuery *query.Sprint, flags query.FlagParser, board
 	v := view.SprintList{
 		Project: project,
 		Board:   viper.GetString("board.name"),
-		Server:  server,
+		Client:  client,
 		Data:    sprints,
 		Issues: func(boardID, sprintID int) []*jira.Issue {
 			iq, err := getIssueQuery(project, flags, sprintQuery.Params().ShowAllIssues)

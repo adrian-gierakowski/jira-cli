@@ -18,6 +18,7 @@ import (
 
 	"github.com/ankitpokhrel/jira-cli/internal/cmdutil"
 	"github.com/ankitpokhrel/jira-cli/pkg/browser"
+	"github.com/ankitpokhrel/jira-cli/pkg/jira"
 	"github.com/ankitpokhrel/jira-cli/pkg/tui"
 )
 
@@ -130,19 +131,19 @@ func issueKeyFromTuiData(r int, d any) string {
 	return path
 }
 
-func jiraURLFromTuiData(server string, r int, d any) string {
-	return cmdutil.GenerateServerBrowseURL(server, issueKeyFromTuiData(r, d))
+func jiraURLFromTuiData(client *jira.Client, r int, d any) string {
+	return cmdutil.GenerateServerBrowseURL(client, issueKeyFromTuiData(r, d))
 }
 
-func navigate(server string) tui.SelectedFunc {
+func navigate(client *jira.Client) tui.SelectedFunc {
 	return func(r, _ int, d any) {
-		_ = browser.Browse(jiraURLFromTuiData(server, r, d))
+		_ = browser.Browse(jiraURLFromTuiData(client, r, d))
 	}
 }
 
-func copyURL(server string) tui.CopyFunc {
+func copyURL(client *jira.Client) tui.CopyFunc {
 	return func(r, _ int, d any) {
-		_ = clipboard.WriteAll(jiraURLFromTuiData(server, r, d))
+		_ = clipboard.WriteAll(jiraURLFromTuiData(client, r, d))
 	}
 }
 

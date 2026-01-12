@@ -46,7 +46,6 @@ func NewCmdClone() *cobra.Command {
 }
 
 func clone(cmd *cobra.Command, args []string) {
-	server := viper.GetString("server")
 	project := viper.GetString("project.key")
 	projectType := viper.GetString("project.type")
 
@@ -96,7 +95,7 @@ func clone(cmd *cobra.Command, args []string) {
 	}()
 	cmdutil.ExitIfError(err)
 
-	cmdutil.Success("Issue cloned\n%s", cmdutil.GenerateServerBrowseURL(server, clonedIssueKey))
+	cmdutil.Success("Issue cloned\n%s", cmdutil.GenerateServerBrowseURL(client, clonedIssueKey))
 
 	var wg sync.WaitGroup
 	wg.Add(1)
@@ -135,7 +134,7 @@ func clone(cmd *cobra.Command, args []string) {
 	defer s.Stop()
 
 	if web, _ := cmd.Flags().GetBool("web"); web {
-		err := cmdutil.Navigate(server, clonedIssueKey)
+		err := cmdutil.Navigate(client, clonedIssueKey)
 		cmdutil.Fail(err.Error())
 	}
 

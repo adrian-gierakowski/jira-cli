@@ -63,13 +63,11 @@ func unlink(cmd *cobra.Command, args []string) {
 	}()
 	cmdutil.ExitIfError(err)
 
-	server := viper.GetString("server")
-
 	cmdutil.Success("Issues unlinked")
-	fmt.Printf("%s\n", cmdutil.GenerateServerBrowseURL(server, uc.params.inwardIssueKey))
+	fmt.Printf("%s\n", cmdutil.GenerateServerBrowseURL(client, uc.params.inwardIssueKey))
 
 	if web, _ := cmd.Flags().GetBool("web"); web {
-		err := cmdutil.Navigate(server, uc.params.inwardIssueKey)
+		err := cmdutil.Navigate(client, uc.params.inwardIssueKey)
 		cmdutil.ExitIfError(err)
 	}
 }

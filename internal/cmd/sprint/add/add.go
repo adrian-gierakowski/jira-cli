@@ -35,7 +35,6 @@ func NewCmdAdd() *cobra.Command {
 }
 
 func add(cmd *cobra.Command, args []string) {
-	server := viper.GetString("server")
 	project := viper.GetString("project.key")
 	params := parseFlags(cmd.Flags(), args, project)
 	client := api.DefaultClient(params.debug)
@@ -70,7 +69,7 @@ func add(cmd *cobra.Command, args []string) {
 	}()
 	cmdutil.ExitIfError(err)
 
-	cmdutil.Success(fmt.Sprintf("Issues added to the sprint %s\n%s", params.sprintID, cmdutil.GenerateServerBrowseURL(server, project)))
+	cmdutil.Success(fmt.Sprintf("Issues added to the sprint %s\n%s", params.sprintID, cmdutil.GenerateServerBrowseURL(client, project)))
 }
 
 func parseFlags(flags query.FlagParser, args []string, project string) *addParams {

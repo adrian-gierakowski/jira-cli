@@ -36,7 +36,6 @@ func NewCmdAdd() *cobra.Command {
 }
 
 func add(cmd *cobra.Command, args []string) {
-	server := viper.GetString("server")
 	project := viper.GetString("project.key")
 	projectType := viper.GetString("project.type")
 	params := parseFlags(cmd.Flags(), args, project)
@@ -96,7 +95,7 @@ func add(cmd *cobra.Command, args []string) {
 		return nil
 	}()
 
-	msg := fmt.Sprintf("Issues added to the epic %s\n%s", params.epicKey, cmdutil.GenerateServerBrowseURL(server, params.epicKey))
+	msg := fmt.Sprintf("Issues added to the epic %s\n%s", params.epicKey, cmdutil.GenerateServerBrowseURL(client, params.epicKey))
 
 	if projectType != jira.ProjectTypeNextGen {
 		cmdutil.ExitIfError(err)

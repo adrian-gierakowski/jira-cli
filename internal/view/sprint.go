@@ -23,7 +23,7 @@ type SprintIssueFunc func(boardID, sprintID int) []*jira.Issue
 type SprintList struct {
 	Project string
 	Board   string
-	Server  string
+	Client  *jira.Client
 	Data    []*jira.Sprint
 	Issues  SprintIssueFunc
 	Display DisplayFormat
@@ -50,7 +50,7 @@ func (sl *SprintList) Render() error {
 		tui.WithContentTableOpts(
 			tui.WithFixedColumns(sl.Display.FixedColumns),
 			tui.WithTableStyle(sl.Display.TableStyle),
-			tui.WithSelectedFunc(navigate(sl.Server)),
+			tui.WithSelectedFunc(navigate(sl.Client)),
 			tui.WithViewModeFunc(func(r, c int, d interface{}) (func() interface{}, func(interface{}) (string, error)) {
 				dataFn := func() interface{} {
 					data := d.(tui.TableData)
@@ -60,7 +60,7 @@ func (sl *SprintList) Render() error {
 				}
 				renderFn := func(i interface{}) (string, error) {
 					iss := Issue{
-						Server:  sl.Server,
+						Client:  sl.Client,
 						Data:    i.(*jira.Issue),
 						Options: IssueOption{NumComments: 1},
 					}
@@ -68,7 +68,7 @@ func (sl *SprintList) Render() error {
 				}
 				return dataFn, renderFn
 			}),
-			tui.WithCopyFunc(copyURL(sl.Server)),
+			tui.WithCopyFunc(copyURL(sl.Client)),
 			tui.WithCopyKeyFunc(copyKey()),
 		),
 	)

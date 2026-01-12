@@ -106,6 +106,7 @@ type MTLSConfig struct {
 // Config is a jira config.
 type Config struct {
 	Server     string
+	CloudID    string
 	Login      string
 	APIToken   string
 	AuthType   *AuthType
@@ -119,6 +120,7 @@ type Client struct {
 	transport http.RoundTripper
 	insecure  bool
 	server    string
+	apiServer string
 	login     string
 	authType  *AuthType
 	token     string
@@ -131,12 +133,19 @@ type ClientFunc func(*Client)
 
 // NewClient instantiates new jira client.
 func NewClient(c Config, opts ...ClientFunc) *Client {
+	server := strings.TrimSuffix(c.Server, "/")
+	apiServer := server
+	if c.CloudID != "" {
+		apiServer = fmt.Sprintf("https://api.atlassian.com/ex/jira/%s", c.CloudID)
+	}
+
 	client := Client{
-		server:   strings.TrimSuffix(c.Server, "/"),
-		login:    c.Login,
-		token:    c.APIToken,
-		authType: c.AuthType,
-		debug:    c.Debug,
+		server:    server,
+		apiServer: apiServer,
+		login:     c.Login,
+		token:     c.APIToken,
+		authType:  c.AuthType,
+		debug:     c.Debug,
 	}
 
 	for _, opt := range opts {
@@ -194,54 +203,59 @@ func WithInsecureTLS(ins bool) ClientFunc {
 	}
 }
 
+// ServerURL returns the server URL.
+func (c *Client) ServerURL() string {
+	return c.server
+}
+
 // Get sends GET request to v3 version of the jira api.
 func (c *Client) Get(ctx context.Context, path string, headers Header) (*http.Response, error) {
-	return c.request(ctx, http.MethodGet, c.server+baseURLv3+path, nil, headers)
+	return c.request(ctx, http.MethodGet, c.apiServer+baseURLv3+path, nil, headers)
 }
 
 // GetV2 sends GET request to v2 version of the jira api.
 func (c *Client) GetV2(ctx context.Context, path string, headers Header) (*http.Response, error) {
-	return c.request(ctx, http.MethodGet, c.server+baseURLv2+path, nil, headers)
+	return c.request(ctx, http.MethodGet, c.apiServer+baseURLv2+path, nil, headers)
 }
 
 // GetV1 sends get request to v1 version of the jira api.
 func (c *Client) GetV1(ctx context.Context, path string, headers Header) (*http.Response, error) {
-	return c.request(ctx, http.MethodGet, c.server+baseURLv1+path, nil, headers)
+	return c.request(ctx, http.MethodGet, c.apiServer+baseURLv1+path, nil, headers)
 }
 
 // Post sends POST request to v3 version of the jira api.
 func (c *Client) Post(ctx context.Context, path string, body []byte, headers Header) (*http.Response, error) {
-	return c.request(ctx, http.MethodPost, c.server+baseURLv3+path, body, headers)
+	return c.request(ctx, http.MethodPost, c.apiServer+baseURLv3+path, body, headers)
 }
 
 // PostV2 sends POST request to v2 version of the jira api.
 func (c *Client) PostV2(ctx context.Context, path string, body []byte, headers Header) (*http.Response, error) {
-	return c.request(ctx, http.MethodPost, c.server+baseURLv2+path, body, headers)
+	return c.request(ctx, http.MethodPost, c.apiServer+baseURLv2+path, body, headers)
 }
 
 // PostV1 sends POST request to v1 version of the jira api.
 func (c *Client) PostV1(ctx context.Context, path string, body []byte, headers Header) (*http.Response, error) {
-	return c.request(ctx, http.MethodPost, c.server+baseURLv1+path, body, headers)
+	return c.request(ctx, http.MethodPost, c.apiServer+baseURLv1+path, body, headers)
 }
 
 // Put sends PUT request to v3 version of the jira api.
 func (c *Client) Put(ctx context.Context, path string, body []byte, headers Header) (*http.Response, error) {
-	return c.request(ctx, http.MethodPut, c.server+baseURLv3+path, body, headers)
+	return c.request(ctx, http.MethodPut, c.apiServer+baseURLv3+path, body, headers)
 }
 
 // PutV2 sends PUT request to v2 version of the jira api.
 func (c *Client) PutV2(ctx context.Context, path string, body []byte, headers Header) (*http.Response, error) {
-	return c.request(ctx, http.MethodPut, c.server+baseURLv2+path, body, headers)
+	return c.request(ctx, http.MethodPut, c.apiServer+baseURLv2+path, body, headers)
 }
 
 // PutV1 sends PUT request to v1 version of the jira api.
 func (c *Client) PutV1(ctx context.Context, path string, body []byte, headers Header) (*http.Response, error) {
-	return c.request(ctx, http.MethodPut, c.server+baseURLv1+path, body, headers)
+	return c.request(ctx, http.MethodPut, c.apiServer+baseURLv1+path, body, headers)
 }
 
 // DeleteV2 sends DELETE request to v2 version of the jira api.
 func (c *Client) DeleteV2(ctx context.Context, path string, headers Header) (*http.Response, error) {
-	return c.request(ctx, http.MethodDelete, c.server+baseURLv2+path, nil, headers)
+	return c.request(ctx, http.MethodDelete, c.apiServer+baseURLv2+path, nil, headers)
 }
 
 func (c *Client) request(ctx context.Context, method, endpoint string, body []byte, headers Header) (*http.Response, error) {

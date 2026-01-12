@@ -56,7 +56,6 @@ func NewCmdEdit() *cobra.Command {
 }
 
 func edit(cmd *cobra.Command, args []string) {
-	server := viper.GetString("server")
 	project := viper.GetString("project.key")
 
 	params := parseArgsAndFlags(cmd.Flags(), args, project)
@@ -168,12 +167,12 @@ func edit(cmd *cobra.Command, args []string) {
 	}()
 	cmdutil.ExitIfError(err)
 
-	cmdutil.Success("Issue updated\n%s", cmdutil.GenerateServerBrowseURL(server, params.issueKey))
+	cmdutil.Success("Issue updated\n%s", cmdutil.GenerateServerBrowseURL(client, params.issueKey))
 
 	handleUserAssign(project, params.issueKey, params.assignee, client)
 
 	if web, _ := cmd.Flags().GetBool("web"); web {
-		err := cmdutil.Navigate(server, params.issueKey)
+		err := cmdutil.Navigate(client, params.issueKey)
 		cmdutil.ExitIfError(err)
 	}
 }

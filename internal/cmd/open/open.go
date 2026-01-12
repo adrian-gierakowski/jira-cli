@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	"github.com/ankitpokhrel/jira-cli/api"
 	"github.com/ankitpokhrel/jira-cli/internal/cmdutil"
 	"github.com/ankitpokhrel/jira-cli/pkg/browser"
 )
@@ -37,15 +38,15 @@ func NewCmdOpen() *cobra.Command {
 }
 
 func open(cmd *cobra.Command, args []string) {
-	server := viper.GetString("server")
 	project := viper.GetString("project.key")
+	client := api.DefaultClient(false)
 
 	var url string
 
 	if len(args) == 0 {
-		url = cmdutil.GenerateServerBrowseURL(server, project)
+		url = cmdutil.GenerateServerBrowseURL(client, project)
 	} else {
-		url = cmdutil.GenerateServerBrowseURL(server, cmdutil.GetJiraIssueKey(project, args[0]))
+		url = cmdutil.GenerateServerBrowseURL(client, cmdutil.GetJiraIssueKey(project, args[0]))
 	}
 
 	fmt.Println(url)
