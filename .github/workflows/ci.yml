@@ -15,16 +15,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '^1.24.1'
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v16
+
+      - name: Use Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v8
 
       - name: Install dependencies
-        run: make deps
+        run: nix develop --command make deps
 
       - name: Run linter
-        run: make lint
+        run: nix develop --command make lint
 
       - name: Run tests
-        run: make test
+        run: nix develop --command make test
