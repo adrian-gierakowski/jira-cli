@@ -26,6 +26,10 @@
             echo "Gopls version: $(gopls version | head -n 1)"
           '';
         };
+        packages.default = pkgs.jira-cli-go.overrideAttrs (oldAttrs: {
+          src = pkgs.lib.cleanSource ./.;
+          vendorHash = "sha256-8Pkcs3+24qo7YvTUfmp8iqnghFI3xLkLrUg5QZHLe6I=";
+        });
       }
     );
 }
