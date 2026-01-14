@@ -29,6 +29,10 @@ type initParams struct {
 	updateNetrc bool
 }
 
+var ClientBuilder = func(c jira.Config, opts ...jira.ClientFunc) *jira.Client {
+	return jira.NewClient(c, opts...)
+}
+
 // NewCmdInit is an init command.
 func NewCmdInit() *cobra.Command {
 	cmd := cobra.Command{
@@ -106,7 +110,7 @@ func parseFlags(flags query.FlagParser) *initParams {
 func initialize(cmd *cobra.Command, _ []string) {
 	params := parseFlags(cmd.Flags())
 
-	client := jira.NewClient(jira.Config{
+	client := ClientBuilder(jira.Config{
 		Server:   params.server,
 		AuthType: (*jira.AuthType)(&params.authType),
 		Insecure: &params.insecure,

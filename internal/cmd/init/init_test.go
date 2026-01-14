@@ -25,6 +25,17 @@ func TestUpdateNetrc(t *testing.T) {
 	}, jira.WithTransport(http.DefaultClient.Transport)))
 	defer api.SetJiraClient(nil)
 
+	oldClientBuilder := ClientBuilder
+	defer func() { ClientBuilder = oldClientBuilder }()
+	ClientBuilder = func(c jira.Config, opts ...jira.ClientFunc) *jira.Client {
+		return jira.NewClient(c, append(opts, jira.WithTransport(http.DefaultClient.Transport))...)
+	}
+
+	gock.New("https://test.jira.com").
+		Get("/_edge/tenant_info").
+		Reply(200).
+		JSON(map[string]string{"cloudId": "test-cloud-id"})
+
 	gock.New("https://test.jira.com").
 		Get("/rest/api/2/myself").
 		Reply(200).
