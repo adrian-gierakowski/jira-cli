@@ -1,6 +1,7 @@
 package cmdutil
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -215,4 +216,14 @@ func GetTUIStyleConfig() tui.TableStyle {
 		SelectionForeground: viper.GetString("tui.selection.foreground"),
 		SelectionTextIsBold: bold,
 	}
+}
+
+// OutputRawJSON prints the given interface as indented JSON.
+func OutputRawJSON(v interface{}) {
+	data, err := json.MarshalIndent(v, "", "  ")
+	if err != nil {
+		Failed("Failed to marshal data to JSON: %s", err)
+		return
+	}
+	fmt.Println(string(data))
 }

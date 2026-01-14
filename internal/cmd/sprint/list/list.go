@@ -118,6 +118,14 @@ func singleSprintView(sprintQuery *query.Sprint, flags query.FlagParser, boardID
 		return
 	}
 
+	raw, err := flags.GetBool("raw")
+	cmdutil.ExitIfError(err)
+
+	if raw {
+		cmdutil.OutputRawJSON(issues)
+		return
+	}
+
 	plain, err := flags.GetBool("plain")
 	cmdutil.ExitIfError(err)
 
@@ -209,6 +217,14 @@ func sprintExplorerView(sprintQuery *query.Sprint, flags query.FlagParser, board
 			sprint = sprints[len(sprints)-1]
 		}
 		singleSprintView(sprintQuery, flags, boardID, sprint.ID, project, server, client, sprint)
+		return
+	}
+
+	raw, err := flags.GetBool("raw")
+	cmdutil.ExitIfError(err)
+
+	if raw {
+		cmdutil.OutputRawJSON(sprints)
 		return
 	}
 

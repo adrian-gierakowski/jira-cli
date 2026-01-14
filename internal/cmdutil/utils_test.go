@@ -1,6 +1,7 @@
 package cmdutil
 
 import (
+	"io"
 	"os"
 	"testing"
 	"time"
@@ -58,6 +59,22 @@ func TestFormatDateTimeHuman(t *testing.T) {
 			assert.Equal(t, tc.expected, tc.format())
 		})
 	}
+}
+
+func TestOutputRawJSON(t *testing.T) {
+	// Capturing stdout
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	data := map[string]string{"key": "value"}
+	OutputRawJSON(data)
+
+	_ = w.Close()
+	os.Stdout = oldStdout
+
+	out, _ := io.ReadAll(r)
+	assert.JSONEq(t, "{\"key\": \"value\"}", string(out))
 }
 
 func TestGetConfigHome(t *testing.T) {
